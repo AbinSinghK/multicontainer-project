@@ -22,6 +22,7 @@ jobs:
           username: abinsingh2016
           key: ${{ secrets.SSH_KEY }}
           script: |
+            rm -rf ~/multicontainer-project
             git clone https://github.com/AbinSinghK/multicontainer-project.git && cd multicontainer-project
             git pull
             docker compose down
