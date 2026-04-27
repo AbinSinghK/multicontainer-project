@@ -2,137 +2,153 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>🚀 Full Stack App</title>
+  <title>⚡ DevOps Monitoring Dashboard</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
 
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      text-align: center;
       margin: 0;
-      padding-top: 100px;
+      background: radial-gradient(circle at top, #1e3c72, #2a5298);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
 
-    .container {
-      background: rgba(0, 0, 0, 0.35);
-      padding: 50px;
+    .dashboard {
+      width: 420px;
+      background: rgba(0,0,0,0.35);
+      backdrop-filter: blur(15px);
       border-radius: 20px;
-      display: inline-block;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-      backdrop-filter: blur(12px);
-      animation: fadeIn 1s ease;
+      padding: 30px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+      animation: pop 0.6s ease;
+    }
+
+    @keyframes pop {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
 
     h1 {
-      margin-bottom: 10px;
-      font-weight: 600;
+      text-align: center;
+      margin-bottom: 5px;
     }
 
-    .subtitle {
-      font-size: 14px;
+    .tag {
+      text-align: center;
+      font-size: 12px;
       opacity: 0.8;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.08);
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+    }
+
+    .status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: gray;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%,100% { opacity: 0.3; }
+      50% { opacity: 1; }
     }
 
     button {
-      padding: 14px 30px;
-      font-size: 16px;
+      width: 100%;
+      padding: 12px;
       border: none;
       border-radius: 10px;
       background: linear-gradient(to right, #00c6ff, #0072ff);
       color: white;
+      font-size: 15px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: 0.3s;
     }
 
     button:hover {
-      transform: scale(1.08);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+      transform: scale(1.03);
     }
 
-    button:active {
-      transform: scale(0.95);
+    .output {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.08);
+      font-size: 14px;
+      min-height: 40px;
     }
 
-    #output {
-      margin-top: 25px;
-      font-size: 18px;
-      min-height: 30px;
-    }
-
-    .loading {
-      color: #ffd700;
-      animation: blink 1s infinite;
-    }
-
-    .success {
-      color: #00ffcc;
-    }
-
-    .error {
-      color: #ff6b6b;
-    }
-
-    .footer {
-      margin-top: 30px;
-      font-size: 12px;
-      opacity: 0.7;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 0.4; }
-      50% { opacity: 1; }
-    }
+    .success { color: #00ffcc; }
+    .error { color: #ff6b6b; }
+    .loading { color: #ffd700; }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <h1>🚀 Full Stack App</h1>
-    <p class="subtitle">Click the button to fetch live server time ⏱️</p>
 
-    <button onclick="getData()">Get Server Time</button>
+<div class="dashboard">
 
-    <p id="output"></p>
+  <h1>⚡ DevOps Dashboard</h1>
+  <div class="tag">Live Backend Monitoring Panel</div>
 
-    <div class="footer">
-      ⚙️ Powered by Node.js • Docker • CI/CD • Monitoring
-    </div>
+  <div class="card status">
+    <div>Backend API</div>
+    <div class="dot"></div>
   </div>
 
-  <script>
-    async function getData() {
-      const output = document.getElementById("output");
+  <button onclick="getData()">▶ Test API (Get Server Time)</button>
 
-      try {
-        output.innerText = "⏳ Fetching data...";
-        output.className = "loading";
+  <div id="output" class="output">Waiting for request...</div>
 
-        const res = await fetch("http://localhost:5000");
+</div>
 
-        if (!res.ok) {
-          throw new Error("Failed to fetch data");
-        }
+<script>
+async function getData() {
+  const output = document.getElementById("output");
 
-        const data = await res.json();
+  try {
+    output.innerText = "⏳ Calling backend API...";
+    output.className = "output loading";
 
-        // ✅ FIXED LINE (safe + correct)
-        output.innerText = "🕒 Server Time: " + data.time;
+    const res = await fetch("http://localhost:5000");
 
-        output.className = "success";
-      } catch (error) {
-        output.innerText = "❌ Error fetching data";
-        output.className = "error";
-      }
-    }
-  </script>
+    if (!res.ok) throw new Error("API failed");
+
+    const data = await res.json();
+
+    const time = new Date(data.time).toLocaleString();
+
+    output.innerHTML =
+      "🟢 <b>Success!</b><br>⏱ Server Time: " + time;
+
+    output.className = "output success";
+
+  } catch (err) {
+    output.innerHTML =
+      "🔴 <b>Backend not reachable</b><br>Check Docker / API / CORS";
+
+    output.className = "output error";
+  }
+}
+</script>
+
 </body>
 </html>
