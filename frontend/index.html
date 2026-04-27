@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <h1>🚀 Full Stack App</h1>
+  <button onclick="getData()">Get Server Time</button>
+  <p id="output"></p>
+
+  <script>
+    async function getData() {
+      const res = await fetch("http://localhost:5000");
+      const data = await res.json();
+      document.getElementById("output").innerText = data.time;
+    }
+  </script>
+</body>
+</html>
