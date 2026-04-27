@@ -28,7 +28,7 @@ app.get("/", async (req, res) => {
   httpRequestCounter.inc(); // increase count
 
   const result = await pool.query("SELECT NOW()");
-  res.json({ time: result.rows[0] });
+  res.json({ time: result.rows[0].now });
 });
 
 // 🔥 Prometheus metrics endpoint (VERY IMPORTANT)
