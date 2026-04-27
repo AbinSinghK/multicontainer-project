@@ -23,12 +23,24 @@ const pool = new Pool({
   port: 5432,
 });
 
-// Your existing route
+// ✅ FIXED ROUTE (safe + correct response)
 app.get("/", async (req, res) => {
-  httpRequestCounter.inc(); // increase count
+  try {
+    httpRequestCounter.inc(); // increase count
 
-  const result = await pool.query("SELECT NOW()");
-  res.json({ time: result.rows[0].now });
+    const result = await pool.query("SELECT NOW()");
+
+    // FIX: ensure correct field extraction
+    res.json({
+      time: result.rows?.[0]?.now || null
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      error: "Database query failed",
+      details: err.message
+    });
+  }
 });
 
 // 🔥 Prometheus metrics endpoint (VERY IMPORTANT)
@@ -37,4 +49,6 @@ app.get("/metrics", async (req, res) => {
   res.end(await client.register.metrics());
 });
 
-app.listen(5000, () => console.log("Backend running on 5000"));
+app.listen(5000, "0.0.0.0", () =>
+  console.log("Backend running on 5000")
+);
